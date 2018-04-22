@@ -23,6 +23,12 @@ namespace MapPingCore.Controllers
             return "value";
         }
 
+        [HttpGet("exception")]
+        public void Exception()
+        {
+            throw new Exception("Padraic");
+        }
+
         // POST api/values
         [HttpPost]
         public void Post([FromBody]string value)
