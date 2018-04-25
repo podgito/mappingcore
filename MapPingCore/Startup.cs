@@ -24,6 +24,10 @@ namespace MapPingCore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddSwaggerGen(opts =>
+            {
+                opts.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info { Title = "MapPing", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,6 +39,8 @@ namespace MapPingCore
             }
 
             app.UseMvc();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MapPing V1"));
         }
     }
 }
