@@ -23,6 +23,14 @@ namespace MapPingCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(opts =>
+                opts.AddPolicy("AllowSubdomains", builder =>
+                    builder
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .SetIsOriginAllowedToAllowWildcardSubdomains()
+                    .WithOrigins(Configuration["CORS:Origin"])));
+
             services.AddMvc();
             services.AddSwaggerGen(opts =>
             {
@@ -38,6 +46,8 @@ namespace MapPingCore
                 app.UseDeveloperExceptionPage();
             }
 
+            
+            app.UseCors("AllowSubdomains");
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MapPing V1"));
