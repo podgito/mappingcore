@@ -22,9 +22,11 @@
     "@angular/platform-browser-dynamic": "^6.0.2",
     "@angular/router": "^6.0.2",
     "@ng-bootstrap/ng-bootstrap": "1.1.2",
+    "angular-font-awesome": "^3.1.2",
     "bootstrap": "4.1.0",
     "core-js": "^2.4.1",
     "d3v4": "^4.2.2",
+    "font-awesome": "^4.7.0",
     "rxjs": "^6.1.0",
     "topojson": "^3.0.2",
     "zone.js": "^0.8.19"
