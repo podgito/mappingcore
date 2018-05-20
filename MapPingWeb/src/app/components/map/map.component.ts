@@ -2,6 +2,7 @@ import { Component, OnInit, AfterContentInit } from '@angular/core';
 import * as d3 from 'd3v4';
 import * as topojson from 'topojson';
 import { WindowRefService } from '../../services/window-ref.service';
+import { HubConnection, HubConnectionBuilder  } from '@aspnet/signalr';
 
 @Component({
   selector: 'app-map',
@@ -10,9 +11,21 @@ import { WindowRefService } from '../../services/window-ref.service';
 })
 export class MapComponent implements OnInit, AfterContentInit {
 
+  hubUrl = 'http://localhost:60961/map';
+  private hub: HubConnection;
   constructor(private windowRef: WindowRefService) { }
 
   ngOnInit() {
+    // https://passos.com.au/signalr-with-net-core-2-1-and-angular/
+    this.hub = new HubConnectionBuilder()
+                  .withUrl(this.hubUrl)
+                  .build();
+
+    this.hub.on('event', (event) =>{
+      console.log(event);
+    });
+
+    this.hub.start();
   }
 
   ngAfterContentInit() {
@@ -31,12 +44,12 @@ export class MapComponent implements OnInit, AfterContentInit {
 
     var path = d3.geoPath()
       .projection(projection);
-      
+
 
     d3.json("data/ireland.json", function (error, c) {
 
-      console.log(error);
-      console.log(c);
+      // console.log(error);
+      // console.log(c);
       // c.objects.counties.forEach(function (county) {
       //     counties.push(county.id);
       // }, this);

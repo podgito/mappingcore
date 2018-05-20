@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MapPingCore.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -28,10 +29,12 @@ namespace MapPingCore
                     builder
                     .AllowAnyMethod()
                     .AllowAnyHeader()
+                    .AllowCredentials()
                     .SetIsOriginAllowedToAllowWildcardSubdomains()
                     .WithOrigins(Configuration["CORS:Origin"])));
 
             services.AddMvc();
+            services.AddSignalR();
             services.AddSwaggerGen(opts =>
             {
                 opts.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info { Title = "MapPing", Version = "v1" });
@@ -49,6 +52,12 @@ namespace MapPingCore
             
             app.UseCors("AllowSubdomains");
             app.UseMvc();
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<MapHub>("/map");
+            }); 
+
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MapPing V1"));
         }
