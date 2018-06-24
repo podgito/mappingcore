@@ -3,6 +3,7 @@ import * as d3 from 'd3v4';
 import * as topojson from 'topojson';
 import { WindowRefService } from '../../services/window-ref.service';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
+import { Ping } from '../../models/ping';
 
 var $this;
 
@@ -32,7 +33,7 @@ export class MapComponent implements OnInit, AfterContentInit {
       console.log(event);
     });
 
-    // this.hub.start();
+     this.hub.start();
   }
 
   ngAfterContentInit() {
@@ -94,8 +95,8 @@ export class MapComponent implements OnInit, AfterContentInit {
 
   }
 
-  addEvent(event) {
-    var coords = [event.lon, event.lat];
+  addEvent(event : Ping) {
+    var coords = [event.longitude, event.latitude];
 
     var county = this.getCounty(coords);
 

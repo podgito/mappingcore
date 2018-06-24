@@ -24,6 +24,8 @@ namespace MapPingCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            ConfigureDependencies(services);
+
             services.AddCors(opts =>
                 opts.AddPolicy("AllowSubdomains", builder =>
                     builder
@@ -40,6 +42,13 @@ namespace MapPingCore
                 opts.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info { Title = "MapPing", Version = "v1" });
             });
         }
+
+        private static void ConfigureDependencies(IServiceCollection services)
+        {
+            services.AddTransient<MapHubService, MapHubService>();
+        }
+
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

@@ -37,11 +37,23 @@
       "metadata": {
         "description": "Describes plan's instance count"
       }
+    },
+    "samappingdevType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_ZRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Premium_LRS"
+      ]
     }
   },
   "variables": {
     "serviceAppName": "[concat(parameters('solutionName'), '-svc')]",
-    "webAppName": "[concat(parameters('solutionName'), '-web')]"
+    "webAppName": "[concat(parameters('solutionName'), '-web')]",
+    "samappingdevName": "[concat('samappingdev', uniqueString(resourceGroup().id))]"
   },
   "resources": [
     {
@@ -312,6 +324,20 @@
         "name": "[variables('webAppName')]",
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
       }
+    },
+    {
+      "name": "[variables('samappingdevName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-01-01",
+      "sku": {
+        "name": "[parameters('samappingdevType')]"
+      },
+      "dependsOn": [ ],
+      "tags": {
+        "displayName": "samappingdev"
+      },
+      "kind": "Storage"
     }
   ]
 }

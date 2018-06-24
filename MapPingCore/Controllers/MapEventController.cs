@@ -1,30 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using MapPingCore.Common.Models;
 using MapPingCore.Hubs;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
+using System.Threading.Tasks;
 
 namespace MapPingCore.Controllers
 {
     [Produces("application/json")]
-    [Route("api/MapEvent")]
-    public class MapEventController : Controller
+    [Route("api/ping")]
+    public class PingController : Controller
     {
-        private readonly IHubContext<MapHub> _hubContext;
+        private readonly MapHubService _hubService;
 
-        public MapEventController(IHubContext<MapHub> hubContext)
+        public PingController(MapHubService mapHubService)
         {
-            _hubContext = hubContext;
+            _hubService = mapHubService;
         }
 
-        [HttpGet("test")]
-        public Task Test()
+        [HttpPost("")]
+        public async Task<IActionResult> Ping([FromBody]Ping ping)
         {
-            return _hubContext.Clients.All.SendAsync("event", "hello!!!");
+            if (!this.ModelState.IsValid) return BadRequest(this.ModelState);
+            
+            await _hubService.SendPingToAll(ping);
+            return Ok();
         }
-
     }
 }
