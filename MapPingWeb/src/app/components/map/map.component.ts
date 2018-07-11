@@ -4,6 +4,7 @@ import * as topojson from 'topojson';
 import { WindowRefService } from '../../services/window-ref.service';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { Ping } from '../../models/ping';
+import { GeolocationService } from '../../services/geolocation.service';
 
 var $this;
 
@@ -20,7 +21,8 @@ export class MapComponent implements OnInit, AfterContentInit {
   counties: any[];
   $this: MapComponent;
   private hub: HubConnection;
-  constructor(private windowRef: WindowRefService) { }
+  constructor(private windowRef: WindowRefService,
+  private geoService: GeolocationService) { }
 
   ngOnInit() {
     $this = this;
@@ -34,7 +36,10 @@ export class MapComponent implements OnInit, AfterContentInit {
     });
 
      this.hub.start();
+
+     this.geoService.getLocation();
   }
+
 
   ngAfterContentInit() {
     //TODO D3

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MapPing.Geolocation.IPLocationServices;
+using MapPing.Geolocation.IPLocationServices.IPStack;
 using MapPingCore.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,6 +28,8 @@ namespace MapPingCore
         {
             ConfigureDependencies(services);
 
+            
+
             services.AddCors(opts =>
                 opts.AddPolicy("AllowSubdomains", builder =>
                     builder
@@ -46,6 +50,14 @@ namespace MapPingCore
         private static void ConfigureDependencies(IServiceCollection services)
         {
             services.AddTransient<MapHubService, MapHubService>();
+        }
+
+        private static void ConfigureIPLocationServiceHttpClients(IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHttpClient(IPStackLocationService.HttpClientConfigName, client =>
+            {
+                IPStackLocationService.HttpClientRegistration(client, configuration.Get<ApiConfiguration>());
+            });
         }
 
 
