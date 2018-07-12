@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Threading.Tasks;
 
 namespace MapPing.Geolocation.IPLocationServices
 {
     public interface IPLocationService
     {
-        Position GetPosition(string ipAddress);
+        Task<Position> GetPosition(string ipAddress);
     }
 }

@@ -24,7 +24,7 @@ namespace MapPing.Geolocation.IPLocationServices.IPStack
 
     public class Location
     {
-        public int geoname_id { get; set; }
+        public int? geoname_id { get; set; }
         public string capital { get; set; }
         public Language[] languages { get; set; }
         public string country_flag { get; set; }

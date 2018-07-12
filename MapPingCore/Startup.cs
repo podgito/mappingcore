@@ -54,7 +54,7 @@ namespace MapPingCore
 
         private static void ConfigureIPLocationServiceHttpClients(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddHttpClient(IPStackLocationService.HttpClientConfigName, client =>
+            services.AddHttpClient<IPStackLocationService>(client =>
             {
                 IPStackLocationService.HttpClientRegistration(client, configuration.Get<ApiConfiguration>());
             });
