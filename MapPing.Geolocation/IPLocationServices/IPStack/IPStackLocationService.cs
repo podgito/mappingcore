@@ -17,9 +17,7 @@ namespace MapPing.Geolocation.IPLocationServices.IPStack
 
         public static void HttpClientRegistration(HttpClient client, ApiConfiguration config)
         {
-            client.BaseAddress = new Uri("https://someapiurl/");
-            client.DefaultRequestHeaders.Add("Accept", "application/json");
-            client.DefaultRequestHeaders.Add("User-Agent", "MyCustomUserAgent");
+            client.BaseAddress = new Uri(config.BaseAddress);
         }
     }
 }
