@@ -11,7 +11,7 @@ namespace MapPing.Tests.Geolocation
     public class IPStackTest
     {
         IPStackLocationService service;
-        const string StaticIP = "8.8.8.8";
+        const string GoogleIP = "8.8.8.8";
         [SetUp]
         public void Setup()
         {
@@ -31,7 +31,7 @@ namespace MapPing.Tests.Geolocation
         public async Task BasicIPLookup()
         {
             //Act
-            var response = await service.GetPosition(StaticIP);
+            var response = await service.GetPosition(GoogleIP);
 
             //Assert
             Assert.AreEqual("US", response.CountryCode);

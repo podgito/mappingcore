@@ -25,7 +25,14 @@ namespace MapPing.Geolocation.IPLocationServices.IPStack
             res.EnsureSuccessStatusCode();
             var ipStackResponse = await res.Content.ReadAsAsync<IPStackResponse>();
 
-            return new Position();
+            return new Position
+            {
+                Latitude = ipStackResponse.latitude,
+                Longitude = ipStackResponse.longitude,
+                City = ipStackResponse.city,
+                CountryCode = ipStackResponse.country_code,
+                Region = ipStackResponse.region_name
+            };
         }
 
         public static void HttpClientRegistration(HttpClient client, ApiConfiguration config)
