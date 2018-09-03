@@ -1,6 +1,5 @@
 using MapPing.Geolocation.IPLocationServices;
 using MapPing.Geolocation.IPLocationServices.IPStack;
-using Moq;
 using NUnit.Framework;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -10,8 +9,9 @@ namespace MapPing.Tests.Geolocation
     [Category("Integration")]
     public class IPStackTest
     {
-        IPStackLocationService service;
-        const string GoogleIP = "8.8.8.8";
+        private IPStackLocationService service;
+        private const string GoogleIP = "8.8.8.8";
+
         [SetUp]
         public void Setup()
         {
@@ -24,8 +24,6 @@ namespace MapPing.Tests.Geolocation
             IPStackLocationService.HttpClientRegistration(client, configuration);
             service = new IPStackLocationService(client, configuration);
         }
-
-
 
         [Test]
         public async Task BasicIPLookup()
