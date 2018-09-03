@@ -47,7 +47,8 @@ export class MapComponent implements OnInit, AfterContentInit {
     var window = this.windowRef.nativeWindow;
     var containerHeight = window.innerHeight - 62;
     this.projection = d3.geoMercator()
-      .scale(5500 * containerHeight / 670)
+      // .scale(5500 * containerHeight / 670) //zoom
+      .scale(5500 * containerHeight / 1000) //zoom
       .center([-8, 53.45])
       .translate([window.innerWidth / 2, containerHeight / 2]);
 
@@ -58,8 +59,9 @@ export class MapComponent implements OnInit, AfterContentInit {
     var path = d3.geoPath()
       .projection(this.projection);
 
-
-    d3.json("data/ireland.json", function (error, c) {
+    // var filename = 'data/ireland.json';
+    var filename = 'data/gb_admin.json';
+    d3.json(filename, function (error, c) {
 
       // console.log(error);
       // console.log(c);
