@@ -5,10 +5,6 @@
     "solutionName": {
       "type": "string"
     },
-    "hostingPlanName": {
-      "type": "string",
-      "minLength": 1
-    },
     "skuName": {
       "type": "string",
       "defaultValue": "F1",
@@ -51,293 +47,25 @@
     }
   },
   "variables": {
-    "serviceAppName": "[concat(parameters('solutionName'), '-svc')]",
-    "webAppName": "[concat(parameters('solutionName'), '-web')]",
-    "samappingdevName": "[concat('samappingdev', uniqueString(resourceGroup().id))]"
+    "func-mappingName": "[concat('func-mapping', uniqueString(resourceGroup().id))]"
   },
   "resources": [
     {
-      "apiVersion": "2015-08-01",
-      "name": "[parameters('hostingPlanName')]",
-      "type": "Microsoft.Web/serverfarms",
-      "location": "[resourceGroup().location]",
-      "tags": {
-        "displayName": "HostingPlan"
-      },
-      "sku": {
-        "name": "[parameters('skuName')]",
-        "capacity": "[parameters('skuCapacity')]"
-      },
-      "properties": {
-        "name": "[parameters('hostingPlanName')]"
-      }
-    },
-    {
-      "comments": "Service App",
-      "apiVersion": "2015-08-01",
-      "name": "[variables('serviceAppName')]",
-      "type": "Microsoft.Web/sites",
-      "location": "[resourceGroup().location]",
-      "tags": {
-        "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "Resource",
-        "displayName": "Service App"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
-      ],
-      "properties": {
-        "name": "[variables('serviceAppName')]",
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
-      }
-    },
-    {
-      "apiVersion": "2014-04-01",
-      "name": "[concat(parameters('hostingPlanName'), '-', resourceGroup().name)]",
-      "type": "Microsoft.Insights/autoscalesettings",
-      "location": "[resourceGroup().location]",
-      "tags": {
-        "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "Resource",
-        "displayName": "AutoScaleSettings"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
-      ],
-      "properties": {
-        "profiles": [
-          {
-            "name": "Default",
-            "capacity": {
-              "minimum": 1,
-              "maximum": 1,
-              "default": 1
-            },
-            "rules": [
-              {
-                "metricTrigger": {
-                  "metricName": "CpuPercentage",
-                  "metricResourceUri": "[concat(resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
-                  "timeGrain": "PT1M",
-                  "statistic": "Average",
-                  "timeWindow": "PT10M",
-                  "timeAggregation": "Average",
-                  "operator": "GreaterThan",
-                  "threshold": 80.0
-                },
-                "scaleAction": {
-                  "direction": "Increase",
-                  "type": "ChangeCount",
-                  "value": 1,
-                  "cooldown": "PT10M"
-                }
-              },
-              {
-                "metricTrigger": {
-                  "metricName": "CpuPercentage",
-                  "metricResourceUri": "[concat(resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
-                  "timeGrain": "PT1M",
-                  "statistic": "Average",
-                  "timeWindow": "PT1H",
-                  "timeAggregation": "Average",
-                  "operator": "LessThan",
-                  "threshold": 60.0
-                },
-                "scaleAction": {
-                  "direction": "Decrease",
-                  "type": "ChangeCount",
-                  "value": 1,
-                  "cooldown": "PT1H"
-                }
-              }
-            ]
-          }
-        ],
-        "enabled": false,
-        "name": "[concat(parameters('hostingPlanName'), '-', resourceGroup().name)]",
-        "targetResourceUri": "[concat(resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
-      }
-    },
-    {
-      "apiVersion": "2014-04-01",
-      "name": "[concat('ServerErrors ', variables('serviceAppName'))]",
-      "type": "Microsoft.Insights/alertrules",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites/', variables('serviceAppName'))]"
-      ],
-      "tags": {
-        "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('serviceAppName'))]": "Resource",
-        "displayName": "ServerErrorsAlertRule"
-      },
-      "properties": {
-        "name": "[concat('ServerErrors ', variables('serviceAppName'))]",
-        "description": "[concat(variables('serviceAppName'), ' has some server errors, status code 5xx.')]",
-        "isEnabled": false,
-        "condition": {
-          "odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
-          "dataSource": {
-            "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
-            "resourceUri": "[concat(resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('serviceAppName'))]",
-            "metricName": "Http5xx"
-          },
-          "operator": "GreaterThan",
-          "threshold": 0.0,
-          "windowSize": "PT5M"
-        },
-        "action": {
-          "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleEmailAction",
-          "sendToServiceOwners": true,
-          "customEmails": []
-        }
-      }
-    },
-    {
-      "apiVersion": "2014-04-01",
-      "name": "[concat('ForbiddenRequests ', variables('serviceAppName'))]",
-      "type": "Microsoft.Insights/alertrules",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites/', variables('serviceAppName'))]"
-      ],
-      "tags": {
-        "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('serviceAppName'))]": "Resource",
-        "displayName": "ForbiddenRequestsAlertRule"
-      },
-      "properties": {
-        "name": "[concat('ForbiddenRequests ', variables('serviceAppName'))]",
-        "description": "[concat(variables('serviceAppName'), ' has some requests that are forbidden, status code 403.')]",
-        "isEnabled": false,
-        "condition": {
-          "odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
-          "dataSource": {
-            "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
-            "resourceUri": "[concat(resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('serviceAppName'))]",
-            "metricName": "Http403"
-          },
-          "operator": "GreaterThan",
-          "threshold": 0,
-          "windowSize": "PT5M"
-        },
-        "action": {
-          "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleEmailAction",
-          "sendToServiceOwners": true,
-          "customEmails": []
-        }
-      }
-    },
-    {
-      "apiVersion": "2014-04-01",
-      "name": "[concat('CPUHigh ', parameters('hostingPlanName'))]",
-      "type": "Microsoft.Insights/alertrules",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
-      ],
-      "tags": {
-        "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "Resource",
-        "displayName": "CPUHighAlertRule"
-      },
-      "properties": {
-        "name": "[concat('CPUHigh ', parameters('hostingPlanName'))]",
-        "description": "[concat('The average CPU is high across all the instances of ', parameters('hostingPlanName'))]",
-        "isEnabled": false,
-        "condition": {
-          "odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
-          "dataSource": {
-            "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
-            "resourceUri": "[concat(resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
-            "metricName": "CpuPercentage"
-          },
-          "operator": "GreaterThan",
-          "threshold": 90,
-          "windowSize": "PT15M"
-        },
-        "action": {
-          "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleEmailAction",
-          "sendToServiceOwners": true,
-          "customEmails": []
-        }
-      }
-    },
-    {
-      "apiVersion": "2014-04-01",
-      "name": "[concat('LongHttpQueue ', parameters('hostingPlanName'))]",
-      "type": "Microsoft.Insights/alertrules",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
-      ],
-      "tags": {
-        "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "Resource",
-        "displayName": "LongHttpQueueAlertRule"
-      },
-      "properties": {
-        "name": "[concat('LongHttpQueue ', parameters('hostingPlanName'))]",
-        "description": "[concat('The HTTP queue for the instances of ', parameters('hostingPlanName'), ' has a large number of pending requests.')]",
-        "isEnabled": false,
-        "condition": {
-          "odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
-          "dataSource": {
-            "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
-            "resourceUri": "[concat(resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
-            "metricName": "HttpQueueLength"
-          },
-          "operator": "GreaterThan",
-          "threshold": 100.0,
-          "windowSize": "PT5M"
-        },
-        "action": {
-          "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleEmailAction",
-          "sendToServiceOwners": true,
-          "customEmails": []
-        }
-      }
-    },
-    {
-      "apiVersion": "2014-04-01",
-      "name": "[variables('serviceAppName')]",
-      "type": "Microsoft.Insights/components",
-      "location": "East US",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites/', variables('serviceAppName'))]"
-      ],
-      "tags": {
-        "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('serviceAppName'))]": "Resource",
-        "displayName": "AppInsightsComponent"
-      },
-      "properties": {
-        "applicationId": "[variables('serviceAppName')]"
-      }
-    },
-    {
-      "name": "[variables('webAppName')]",
+      "name": "[variables('func-mappingName')]",
       "type": "Microsoft.Web/sites",
       "location": "[resourceGroup().location]",
       "apiVersion": "2015-08-01",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+        "[resourceId('Microsoft.Web/serverfarms', parameters('asp-cons-mappingName'))]"
       ],
       "tags": {
-        "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName')))]": "Resource",
-        "displayName": "Web App"
+        "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', parameters('asp-cons-mappingName')))]": "Resource",
+        "displayName": "func-mapping"
       },
       "properties": {
-        "name": "[variables('webAppName')]",
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+        "name": "[variables('func-mappingName')]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('asp-cons-mappingName'))]"
       }
-    },
-    {
-      "name": "[variables('samappingdevName')]",
-      "type": "Microsoft.Storage/storageAccounts",
-      "location": "[resourceGroup().location]",
-      "apiVersion": "2016-01-01",
-      "sku": {
-        "name": "[parameters('samappingdevType')]"
-      },
-      "dependsOn": [ ],
-      "tags": {
-        "displayName": "samappingdev"
-      },
-      "kind": "Storage"
     }
   ]
 }
