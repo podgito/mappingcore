@@ -34,7 +34,7 @@
         "description": "Describes plan's instance count"
       }
     },
-    "samappingdevType": {
+    "storemappingfuncType": {
       "type": "string",
       "defaultValue": "Standard_LRS",
       "allowedValues": [
@@ -47,7 +47,8 @@
     }
   },
   "variables": {
-    "func-mappingName": "[concat('func-mapping', uniqueString(resourceGroup().id))]"
+    "func-mappingName": "[concat('func-mapping', uniqueString(resourceGroup().id))]",
+    "storemappingfuncName": "[concat('storemappingfunc', uniqueString(resourceGroup().id))]"
   },
   "resources": [
     {
@@ -56,16 +57,62 @@
       "location": "[resourceGroup().location]",
       "apiVersion": "2015-08-01",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', parameters('asp-cons-mappingName'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storemappingfuncName'))]"
       ],
       "tags": {
-        "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', parameters('asp-cons-mappingName')))]": "Resource",
         "displayName": "func-mapping"
       },
       "properties": {
         "name": "[variables('func-mappingName')]",
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('asp-cons-mappingName'))]"
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "AzureWebJobsDashboard",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storemappingfuncName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storemappingfuncName')), '2015-05-01-preview').key1)]"
+            },
+            {
+              "name": "AzureWebJobsStorage",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storemappingfuncName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storemappingfuncName')), '2015-05-01-preview').key1)]"
+            },
+            {
+              "name": "FUNCTIONS_EXTENSION_VERSION",
+              "value": "~1"
+            },
+            {
+              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storemappingfuncName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storemappingfuncName')), '2015-05-01-preview').key1)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTSHARE",
+              "value": "[concat(toLower(variables('func-mappingName')), 'ac59')]"
+            },
+            {
+              "name": "WEBSITE_NODE_DEFAULT_VERSION",
+              "value": "6.5.0"
+            },
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(resourceId('microsoft.insights/components/', variables('func-mappingName')), '2015-05-01').InstrumentationKey]"
+            }
+          ]
+        },
+        "clientAffinityEnabled": false,
+        "reserved": false
       }
+    },
+    {
+      "name": "[variables('storemappingfuncName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-01-01",
+      "sku": {
+        "name": "[parameters('storemappingfuncType')]"
+      },
+      "dependsOn": [ ],
+      "tags": {
+        "displayName": "storemappingfunc"
+      },
+      "kind": "Storage"
     }
   ]
 }
