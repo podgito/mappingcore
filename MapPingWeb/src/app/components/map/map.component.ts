@@ -5,6 +5,7 @@ import { WindowRefService } from '../../services/window-ref.service';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { Ping } from '../../models/ping';
 import { GeolocationService } from '../../services/geolocation.service';
+import { SignalrService } from '../../services/signalr.service';
 
 var $this;
 
@@ -22,20 +23,26 @@ export class MapComponent implements OnInit, AfterContentInit {
   $this: MapComponent;
   private hub: HubConnection;
   constructor(private windowRef: WindowRefService,
-  private geoService: GeolocationService) { }
+  private geoService: GeolocationService,
+  private signalRService: SignalrService) { }
+
 
   ngOnInit() {
+    this.signalRService.init();
+
     $this = this;
     // https://passos.com.au/signalr-with-net-core-2-1-and-angular/
-    this.hub = new HubConnectionBuilder()
-      .withUrl(this.hubUrl)
-      .build();
+    // this.hub = new HubConnectionBuilder()
+    //   .withUrl(this.hubUrl)
+    //   .build();
 
-    this.hub.on('event', (event) => {
-      console.log(event);
-    });
+    // this.hub.on('event', (event) => {
+    //   console.log(event);
+    // });
 
-     this.hub.start();
+    //  this.hub.start();
+
+    this.signalRService.events.subscribe(event => this.addEvent(event));
 
      this.geoService.getLocation();
   }
@@ -75,7 +82,7 @@ export class MapComponent implements OnInit, AfterContentInit {
         .append("path")
         .attr("class", function (county) {
           //county.id is 'Antrim', 'Dublin' etc.
-          console.log(county);
+          //console.log(county);
           $this.counties.push(county);
           return "county"; // + county.id;
         })
@@ -84,30 +91,36 @@ export class MapComponent implements OnInit, AfterContentInit {
 
     this.svg.on("click", function(){
       var coords = d3.mouse(this);
-      $this.svg.append("circle")
-        .attr("cx", coords[0])
-        .attr("cy", coords[1])
-        .attr("fill", "#900")
-        .attr("stroke", "#999")
-        .attr("opacity", 1)
-        .attr("r", 0.1)
-        .transition()
-        .duration(1500)
-        .attr("r", 20) //TODO make the ending size a function of the value
-        .attr("opacity", 0)
-        .on("end", function () {
-          d3.select(this).remove()
-        });
+      const p = new Ping(0,54, 10); // TODO translate coords to lat/long
+
+
+      $this.signalRService.send(p).subscribe(_ => {});
+      // $this.svg.append("circle")
+      //   .attr("cx", coords[0])
+      //   .attr("cy", coords[1])
+      //   .attr("fill", "#900")
+      //   .attr("stroke", "#999")
+      //   .attr("opacity", 1)
+      //   .attr("r", 0.1)
+      //   .transition()
+      //   .duration(1500)
+      //   .attr("r", 20) //TODO make the ending size a function of the value
+      //   .attr("opacity", 0)
+      //   .on("end", function () {
+      //     d3.select(this).remove()
+      //   });
     });
 
   }
 
   addEvent(event : Ping) {
+    console.log('addEvent');
+    console.log(event);
     var coords = [event.longitude, event.latitude];
 
-    var county = this.getCounty(coords);
+    //var county = this.getCounty(coords);
 
-    console.log(county);
+    //console.log(county);
 
     $this.svg.append("circle")
       .attr("cx", this.projection(coords)[0])

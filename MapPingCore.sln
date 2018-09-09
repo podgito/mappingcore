@@ -15,7 +15,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{12C06E5C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapPing.Tests.Geolocation", "MapPing.Tests.Geolocation\MapPing.Tests.Geolocation.csproj", "{D93D1346-EF0C-4DF0-8F0C-747C99B7CEE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpClientMapper", "HttpClientMapper\HttpClientMapper.csproj", "{0D5D86AF-7CEA-483B-BD2E-72360741390A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpClientMapper", "HttpClientMapper\HttpClientMapper.csproj", "{0D5D86AF-7CEA-483B-BD2E-72360741390A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mapping.Function", "Mapping.Function\Mapping.Function.csproj", "{1242DBCF-3686-4687-B929-0CF5FF157A0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{0D5D86AF-7CEA-483B-BD2E-72360741390A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D5D86AF-7CEA-483B-BD2E-72360741390A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D5D86AF-7CEA-483B-BD2E-72360741390A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1242DBCF-3686-4687-B929-0CF5FF157A0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1242DBCF-3686-4687-B929-0CF5FF157A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1242DBCF-3686-4687-B929-0CF5FF157A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1242DBCF-3686-4687-B929-0CF5FF157A0B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
