@@ -22,8 +22,8 @@
     }
   },
   "variables": {
-    "func-mappingName": "[concat('func-mapping', parameters('env'))]",
-    "storemappingfuncName": "[concat('storemappingfunc', parameters('env'))]"
+    "func-mappingName": "[concat('funcmapping', parameters('env'))]",
+    "storemappingfuncName": "[concat(toLower(variables('func-mappingName')), 'ac59')]"
   },
   "resources": [
     {
@@ -52,7 +52,7 @@
             },
             {
               "name": "FUNCTIONS_EXTENSION_VERSION",
-              "value": "beta"
+              "value": "~2"
             },
             {
               "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",

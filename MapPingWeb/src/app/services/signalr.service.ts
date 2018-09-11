@@ -13,7 +13,9 @@ import { Ping } from '../models/ping';
 export class SignalrService {
 
   private readonly _http: HttpClient;
-    private readonly _baseUrl: string = "http://localhost:7071/api/";
+    // private readonly _baseUrl: string = "http://localhost:7071/api/"; //https://func-mappingdev.azurewebsites.net
+    private readonly _baseUrl: string = "https://funcmappingdev.azurewebsites.net/api/"; //https://func-mappingdev.azurewebsites.net
+
     private hubConnection: HubConnection;
     events: Subject<Ping> = new Subject();
 
