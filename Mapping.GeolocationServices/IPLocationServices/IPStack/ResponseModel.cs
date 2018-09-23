@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MapPing.Geolocation.IPLocationServices.IPStack
+namespace Mapping.GeolocationServices.IPLocationServices.IPStack
 {
 
     public class IPStackResponse

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace MapPing.Geolocation.IPLocationServices
+namespace Mapping.GeolocationServices.IPLocationServices
 {
     public interface IPLocationService
     {

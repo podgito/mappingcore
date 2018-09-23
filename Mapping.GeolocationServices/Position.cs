@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MapPing.Geolocation
+namespace Mapping.GeolocationServices
 {
     public class Position
     {

@@ -6,6 +6,8 @@ import { Subject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { SignalRConnectionInfo } from '../models/signal-rconnection-info';
 import { Ping } from '../models/ping';
+import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +15,7 @@ import { Ping } from '../models/ping';
 export class SignalrService {
 
   private readonly _http: HttpClient;
-    // private readonly _baseUrl: string = "http://localhost:7071/api/"; //https://func-mappingdev.azurewebsites.net
-    private readonly _baseUrl: string = "https://funcmappingdev.azurewebsites.net/api/"; //https://func-mappingdev.azurewebsites.net
+    private readonly _baseUrl: string = environment.signalRServiceUrl;
 
     private hubConnection: HubConnection;
     events: Subject<Ping> = new Subject();

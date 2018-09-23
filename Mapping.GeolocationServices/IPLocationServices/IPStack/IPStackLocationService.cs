@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace MapPing.Geolocation.IPLocationServices.IPStack
+namespace Mapping.GeolocationServices.IPLocationServices.IPStack
 {
     public class IPStackLocationService : IPLocationService
     {
-        static string ConfigurationKey = "IPLocation.IPStack";
         private HttpClient _client;
-        private ApiConfiguration _config;
+        private IApiConfiguration _config;
 
-        public IPStackLocationService(HttpClient client, ApiConfiguration config)
+        public IPStackLocationService(HttpClient client, IApiConfiguration config)
         {
             _client = client;
             _config = config;
+            _client.BaseAddress = new Uri(_config.BaseAddress);
         }
 
         public async Task<Position> GetPosition(string ipAddress)
@@ -33,11 +31,6 @@ namespace MapPing.Geolocation.IPLocationServices.IPStack
                 CountryCode = ipStackResponse.country_code,
                 Region = ipStackResponse.region_name
             };
-        }
-
-        public static void HttpClientRegistration(HttpClient client, ApiConfiguration config)
-        {
-            client.BaseAddress = new Uri(config.BaseAddress);
         }
     }
 }

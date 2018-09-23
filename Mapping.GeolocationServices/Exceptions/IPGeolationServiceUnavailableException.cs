@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MapPing.Geolocation.Exceptions
+namespace Mapping.GeolocationServices.Exceptions
 {
     public class IPGeolationServiceUnavailableException: Exception
     {

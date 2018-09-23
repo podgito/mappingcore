@@ -23,7 +23,7 @@
   },
   "variables": {
     "func-mappingName": "[concat('funcmapping', parameters('env'))]",
-    "storemappingfuncName": "[concat(toLower(variables('func-mappingName')), 'ac59')]"
+    "storemappingfuncName": "[concat(toLower(variables('func-mappingName')), 'ac51')]"
   },
   "resources": [
     {
@@ -60,7 +60,7 @@
             },
             {
               "name": "WEBSITE_CONTENTSHARE",
-              "value": "[concat(toLower(variables('func-mappingName')), 'ac59')]"
+              "value": "[concat(toLower(variables('storemappingfuncName')))]"
             },
             {
               "name": "WEBSITE_NODE_DEFAULT_VERSION",
@@ -80,15 +80,10 @@
       "name": "[variables('storemappingfuncName')]",
       "type": "Microsoft.Storage/storageAccounts",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2016-01-01",
-      "sku": {
-        "name": "[parameters('storemappingfuncType')]"
-      },
-      "dependsOn": [ ],
-      "tags": {
-        "displayName": "storemappingfunc"
-      },
-      "kind": "Storage"
+      "apiVersion": "2015-05-01-preview",
+      "properties": {
+        "accountType": "[parameters('storemappingfuncType')]"
+      }
     }
   ]
 }

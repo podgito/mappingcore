@@ -1,10 +1,11 @@
-using MapPing.Geolocation.IPLocationServices;
-using MapPing.Geolocation.IPLocationServices.IPStack;
+using Mapping.GeolocationServices.IPLocationServices;
+using Mapping.GeolocationServices.IPLocationServices.IPStack;
+using Moq;
 using NUnit.Framework;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace MapPing.Tests.Geolocation
+namespace Mapping.Tests.Geolocation
 {
     [Category("Integration")]
     public class IPStackTest
@@ -15,14 +16,16 @@ namespace MapPing.Tests.Geolocation
         [SetUp]
         public void Setup()
         {
-            var configuration = new ApiConfiguration
-            {
-                BaseAddress = "http://api.ipstack.com/",
-                ApiKey = "0b50b6896a303625ef928bf7c058c1c8"
-            };
+            var configuration = new Mock<IApiConfiguration>();
+            configuration.SetupGet(c => c.BaseAddress).Returns("http://api.ipstack.com/");
+            configuration.SetupGet(c => c.ApiKey).Returns("0b50b6896a303625ef928bf7c058c1c8");
+
+            //{
+            //    BaseAddress = "http://api.ipstack.com/",
+            //    ApiKey = "0b50b6896a303625ef928bf7c058c1c8"
+            //};
             var client = new HttpClient();
-            IPStackLocationService.HttpClientRegistration(client, configuration);
-            service = new IPStackLocationService(client, configuration);
+            service = new IPStackLocationService(client, configuration.Object);
         }
 
         [Test]

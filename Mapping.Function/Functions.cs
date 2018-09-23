@@ -1,3 +1,4 @@
+using Mapping.GeolocationServices.IPLocationServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -7,8 +8,12 @@ using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Ninject;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Mapping.Function
@@ -24,6 +29,17 @@ namespace Mapping.Function
             [SignalR(HubName = hubName)]IAsyncCollector<SignalRMessage> signalRMessages,
             ILogger log)
         {
+            var ipAddress = GetIpFromRequestHeaders(req);
+
+            var ipServiceConfig = Environment.GetEnvironmentVariable("IPGeolocationServices.IPStack.APIKey");
+
+            var kernel = DIContainer.GetKernel();
+            var ipLocationService = kernel.Get<IPLocationService>();
+
+            var position = await ipLocationService.GetPosition(ipAddress);
+
+            var ping = new { latitude = position.Latitude, longitude = position.Longitude, value = 10 };
+
             JToken bodyObject;
             try
             {
@@ -39,7 +55,7 @@ namespace Mapping.Function
                 new SignalRMessage
                 {
                     Target = target,
-                    Arguments = new[] { bodyObject }
+                    Arguments = new[] { ping }
                 });
 
             return new OkResult();
@@ -50,12 +66,22 @@ namespace Mapping.Function
                                         [SignalRConnectionInfo(HubName = hubName)]SignalRConnectionInfo info,
                                         TraceWriter log)
         {
-            //var info = new AzureSignalRConnectionInfo
-            //{
-            //    AccessKey = "NWMtdEmEg5je0PaVM75kA8q43sDewwI7bujTf1Av/pw=",
-            //    Endpoint = "https://mapping.service.signalr.net"
-            //};
             return new OkObjectResult(info);
+        }
+
+        private static string GetIpFromRequestHeaders(HttpRequest request)
+        {
+
+            if (request.Headers.TryGetValue("X-Forwarded-For", out var values))
+            {
+                return values.FirstOrDefault().Split(new char[] { ',' }).FirstOrDefault().Split(new char[] { ':' }).FirstOrDefault();
+            }
+
+#if DEBUG
+            return "176.250.133.195";
+#endif
+
+            return "";
         }
     }
 }
