@@ -65,11 +65,19 @@
             {
               "name": "WEBSITE_NODE_DEFAULT_VERSION",
               "value": "6.5.0"
+            },
+            {
+              "name": "IPGeolocationServices.IPStack.ApiKey",
+              "value": "0b50b6896a303625ef928bf7c058c1c8"
+            },
+            {
+              "name": "IPGeolocationServices.IPStack.BaseAddress",
+              "value": "http://api.ipstack.com/"
+            },
+            {
+              "name": "IPGeolocationServices.IPStack.PathFormat",
+              "value": "{ipAddress}?access_key={apiKey}&format=1"
             }
-            //{
-            //  "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-            //  "value": "[reference(resourceId('microsoft.insights/components/', variables('func-mappingName')), '2015-05-01').InstrumentationKey]"
-            //}
           ]
         },
         "clientAffinityEnabled": false,
