@@ -18,6 +18,7 @@ namespace Mapping.Function
 
             //General
             kernel.Bind<HttpClient>().ToMethod(ctx => HttpClientFactory.Create());
+            kernel.Bind<IApiConfiguration>().To<IPStackApiConfiguration>();
             kernel.Bind<IPStackApiConfiguration>().ToSelf();
             kernel.Bind<IDictionary>().ToConstant(Environment.GetEnvironmentVariables());
 
