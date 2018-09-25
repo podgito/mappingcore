@@ -6,6 +6,7 @@ import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { Ping } from '../../models/ping';
 import { GeolocationService } from '../../services/geolocation.service';
 import { SignalrService } from '../../services/signalr.service';
+import { D3SvgService } from '../../services/d3-svg.service';
 
 var $this;
 
@@ -23,28 +24,19 @@ export class MapComponent implements OnInit, AfterContentInit {
   $this: MapComponent;
   private hub: HubConnection;
   constructor(private windowRef: WindowRefService,
-  private geoService: GeolocationService,
-  private signalRService: SignalrService) { }
+    private geoService: GeolocationService,
+    private signalRService: SignalrService,
+    private d3Svg: D3SvgService) { }
 
 
   ngOnInit() {
     this.signalRService.init();
 
     $this = this;
-    // https://passos.com.au/signalr-with-net-core-2-1-and-angular/
-    // this.hub = new HubConnectionBuilder()
-    //   .withUrl(this.hubUrl)
-    //   .build();
-
-    // this.hub.on('event', (event) => {
-    //   console.log(event);
-    // });
-
-    //  this.hub.start();
 
     this.signalRService.events.subscribe(event => this.addEvent(event));
 
-     this.geoService.getLocation();
+    this.geoService.getLocation();
   }
 
 
@@ -59,22 +51,15 @@ export class MapComponent implements OnInit, AfterContentInit {
       .center([-8, 53.45])
       .translate([window.innerWidth / 2, containerHeight / 2]);
 
-    this.svg = d3.select("#map-container").append("svg")
-      .attr("width", '100%')
-      .attr("height", containerHeight);
+    this.svg = this.d3Svg.createSvg('#map-container', '100%', containerHeight);
 
     var path = d3.geoPath()
       .projection(this.projection);
 
     // var filename = 'data/ireland.json';
-    var filename = 'data/gb_admin.json';
+    // var filename = 'data/gb_admin.json';
+    var filename = 'data/gb_counties.json';
     d3.json(filename, function (error, c) {
-
-      // console.log(error);
-      // console.log(c);
-      // c.objects.counties.forEach(function (county) {
-      //     counties.push(county.id);
-      // }, this);
 
       $this.svg.selectAll("path")
         .data(topojson.feature(c, c.objects.counties).features)
@@ -89,53 +74,27 @@ export class MapComponent implements OnInit, AfterContentInit {
         .attr("d", path);
     });
 
-    this.svg.on("click", function(){
+    this.svg.on("click", function () {
       var coords = d3.mouse(this);
-      const p = new Ping(0,54, 10); // TODO translate coords to lat/long
+      console.log(coords);
+      var long = $this.projection(coords)[0];
+      var lat = $this.projection(coords)[1];
+      const p = new Ping(0, long, lat); // TODO translate coords to lat/long
+      console.log(p);
+      $this.d3Svg.addAnimatedPoint($this.svg, coords[0], coords[1], 10); // a
 
-
-      $this.signalRService.send(p).subscribe(_ => {});
-      // $this.svg.append("circle")
-      //   .attr("cx", coords[0])
-      //   .attr("cy", coords[1])
-      //   .attr("fill", "#900")
-      //   .attr("stroke", "#999")
-      //   .attr("opacity", 1)
-      //   .attr("r", 0.1)
-      //   .transition()
-      //   .duration(1500)
-      //   .attr("r", 20) //TODO make the ending size a function of the value
-      //   .attr("opacity", 0)
-      //   .on("end", function () {
-      //     d3.select(this).remove()
-      //   });
+      $this.signalRService.send(p).subscribe(_ => { });
     });
 
   }
 
-  addEvent(event : Ping) {
+
+
+  addEvent(event: Ping) {
     console.log('addEvent');
     console.log(event);
     var coords = [event.longitude, event.latitude];
-
-    //var county = this.getCounty(coords);
-
-    //console.log(county);
-
-    $this.svg.append("circle")
-      .attr("cx", this.projection(coords)[0])
-      .attr("cy", this.projection(coords)[1])
-      .attr("fill", "#900")
-      .attr("stroke", "#999")
-      .attr("opacity", 1)
-      .attr("r", 0.1)
-      .transition()
-      .duration(1500)
-      .attr("r", event.value) //TODO make the ending size a function of the value
-      .attr("opacity", 0)
-      .on("end", function () {
-        d3.select(this).remove()
-      });
+    this.d3Svg.addAnimatedPoint(this.svg, this.projection(coords)[0], this.projection(coords)[1], event.value);
   }
 
   //This is a backup, in case we don't get the county data.
