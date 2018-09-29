@@ -1,12 +1,12 @@
 import { Component, OnInit, AfterContentInit } from '@angular/core';
 import * as d3 from 'd3v4';
 import * as topojson from 'topojson';
-import { WindowRefService } from '../../services/window-ref.service';
+import { WindowRefService } from '@services/window-ref.service';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
-import { Ping } from '../../models/ping';
-import { GeolocationService } from '../../services/geolocation.service';
-import { SignalrService } from '../../services/signalr.service';
-import { D3SvgService } from '../../services/d3-svg.service';
+import { Ping } from '@models/ping';
+import { GeolocationService } from '@services/geolocation.service';
+import { SignalrService } from '@services/signalr.service';
+import { D3SvgService } from '@services/d3-svg.service';
 
 var $this;
 
@@ -48,7 +48,7 @@ export class MapComponent implements OnInit, AfterContentInit {
     this.projection = d3.geoMercator()
       // .scale(5500 * containerHeight / 670) //zoom
       .scale(5500 * containerHeight / 1000) //zoom
-      .center([-8, 53.45])
+      .center([-3.5, 53.45])
       .translate([window.innerWidth / 2, containerHeight / 2]);
 
     this.svg = this.d3Svg.createSvg('#map-container', '100%', containerHeight);
@@ -65,7 +65,7 @@ export class MapComponent implements OnInit, AfterContentInit {
         .data(topojson.feature(c, c.objects.counties).features)
         .enter()
         .append("path")
-        .attr("class", function (county) {
+        .attr("class", function (county) { // can add custom classes here
           //county.id is 'Antrim', 'Dublin' etc.
           //console.log(county);
           $this.counties.push(county);
@@ -79,7 +79,7 @@ export class MapComponent implements OnInit, AfterContentInit {
       console.log(coords);
       var long = $this.projection(coords)[0];
       var lat = $this.projection(coords)[1];
-      const p = new Ping(0, long, lat); // TODO translate coords to lat/long
+      const p = new Ping(0, long, lat);
       console.log(p);
       $this.d3Svg.addAnimatedPoint($this.svg, coords[0], coords[1], 10); // a
 
