@@ -5,5 +5,7 @@
 
 export const environment = {
   production: false,
-  signalRServiceUrl: "http://localhost:7071/api/"
+  signalRServiceUrl: "http://localhost:7071/api/",
+  version: "0.0.0",
+  environment: "local"
 };
