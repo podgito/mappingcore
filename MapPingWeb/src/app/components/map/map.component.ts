@@ -43,26 +43,42 @@ export class MapComponent implements OnInit, AfterContentInit {
   ngAfterContentInit() {
     //TODO D3
     this.counties = [];
-    var window = this.windowRef.nativeWindow;
-    var containerHeight = window.innerHeight - 62;
-    this.projection = d3.geoMercator()
-      // .scale(5500 * containerHeight / 670) //zoom
-      .scale(5500 * containerHeight / 1000) //zoom
-      .center([-3.5, 53.45])
-      .translate([window.innerWidth / 2, containerHeight / 2]);
 
-    this.svg = this.d3Svg.createSvg('#map-container', '100%', containerHeight);
 
-    var path = d3.geoPath()
-      .projection(this.projection);
+
+
+
+    this.svg = this.d3Svg.createSvg('#map-container');
+
 
     // var filename = 'data/ireland.json';
     // var filename = 'data/gb_admin.json';
     var filename = 'data/gb_counties.json';
     d3.json(filename, function (error, c) {
 
+      var window = $this.windowRef.nativeWindow;
+      var containerHeight = window.innerHeight - 62;
+      $this.projection = d3.geoMercator()
+        .translate([window.innerWidth / 2, containerHeight / 2]);
+
+      var topology = topojson.feature(c, c.objects.regions);
+
+      var path = d3.geoPath()
+        .projection($this.projection);
+
+      var bounds = d3.geoBounds(topology),
+                  center = d3.geoCentroid(topology);
+              // Compute the angular distance between bound corners
+      var distance = d3.geoDistance(bounds[0], bounds[1]),
+          scale = containerHeight / distance / Math.sqrt(2);
+
+
+        console.log(center);
+
+      $this.projection.scale(scale).center(center);
+
       $this.svg.selectAll("path")
-        .data(topojson.feature(c, c.objects.counties).features)
+        .data(topojson.feature(c, c.objects.regions).features)
         .enter()
         .append("path")
         .attr("class", function (county) { // can add custom classes here

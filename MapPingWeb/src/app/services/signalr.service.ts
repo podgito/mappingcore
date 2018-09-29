@@ -4,9 +4,9 @@ import { HubConnection } from '@aspnet/signalr';
 import * as signalR from '@aspnet/signalr';
 import { Subject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SignalRConnectionInfo } from '../models/signal-rconnection-info';
-import { Ping } from '../models/ping';
-import { environment } from '../../environments/environment';
+import { SignalRConnectionInfo } from '@models/signal-rconnection-info';
+import { Ping } from '@models/ping';
+import { environment } from '@environments/environment';
 
 
 @Injectable({

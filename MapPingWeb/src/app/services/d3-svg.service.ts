@@ -9,10 +9,19 @@ export class D3SvgService {
 
   constructor() { }
 
-  createSvg(containerElement: string, width, height) {
-    return d3.select("#map-container").append("svg")
-      .attr("width", width)
-      .attr("height", height);
+  createSvg(containerElement: string) {
+    return d3.select("#map-container")
+      .append("svg")
+      .classed("svg-content-responsive", true)
+      .attr("preserveAspectRatio", "xMinYMin meet")
+      .attr("viewbox", "0 0 600 400");
+  }
+
+  private resizeSvg(){
+    var width = parseInt(d3.select('#map-container').width);
+    var height = parseInt(d3.select('#map-container').height);
+
+
   }
 
   addAnimatedPoint(svg: any, x: number, y: number, value: number) {
@@ -30,5 +39,9 @@ export class D3SvgService {
       .on("end", function () {
         d3.select(this).remove()
       });
+  }
+
+  loadJson(json: string){
+
   }
 }

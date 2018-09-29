@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Html5GeoPosition } from '../models/html5-geo-position';
+import { Html5GeoPosition } from '@models/html5-geo-position';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({

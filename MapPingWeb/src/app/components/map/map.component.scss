@@ -10,3 +10,22 @@ svg {
 #map-container {
   background-color:#96b6ea;
 }
+
+
+.svg-container {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 60px);
+  // padding-bottom: 60%; /* aspect ratio */
+  vertical-align: top;
+  overflow: hidden;
+}
+::ng-deep .svg-content-responsive {
+  display: inline-block;
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
