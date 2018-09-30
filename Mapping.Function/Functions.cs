@@ -10,10 +10,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Ninject;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Mapping.Function
@@ -38,27 +36,26 @@ namespace Mapping.Function
 
             var position = await ipLocationService.GetPosition(ipAddress);
 
-            var ping = new { latitude = position.Latitude, longitude = position.Longitude, value = 10 };
-
             JToken bodyObject;
             try
             {
-                bodyObject = JToken.ReadFrom(new JsonTextReader(new StreamReader(req.Body)));
+                var json = JsonConvert.DeserializeObject<dynamic>((new StreamReader(req.Body).ReadToEnd()));
+                var ping = new { latitude = position.Latitude, longitude = position.Longitude, value = json.value};
+
+                await signalRMessages.AddAsync(
+                    new SignalRMessage
+                    {
+                        Target = target,
+                        Arguments = new[] { ping }
+                    });
+
+                return new OkResult();
             }
             catch (Exception ex)
             {
                 log.LogCritical(ex, "Error parsing Json");
                 return new BadRequestObjectResult(ex.ToString());
             }
-
-            await signalRMessages.AddAsync(
-                new SignalRMessage
-                {
-                    Target = target,
-                    Arguments = new[] { ping }
-                });
-
-            return new OkResult();
         }
 
         [FunctionName("negotiate")]
@@ -71,7 +68,6 @@ namespace Mapping.Function
 
         private static string GetIpFromRequestHeaders(HttpRequest request)
         {
-
             if (request.Headers.TryGetValue("X-Forwarded-For", out var values))
             {
                 return values.FirstOrDefault().Split(new char[] { ',' }).FirstOrDefault().Split(new char[] { ':' }).FirstOrDefault();

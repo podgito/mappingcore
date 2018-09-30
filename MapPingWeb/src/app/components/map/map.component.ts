@@ -95,7 +95,7 @@ export class MapComponent implements OnInit, AfterContentInit {
       console.log(coords);
       var long = $this.projection(coords)[0];
       var lat = $this.projection(coords)[1];
-      const p = new Ping(0, long, lat);
+      const p = new Ping(long, long, 10);
       console.log(p);
       $this.d3Svg.addAnimatedPoint($this.svg, coords[0], coords[1], 10); // a
 
