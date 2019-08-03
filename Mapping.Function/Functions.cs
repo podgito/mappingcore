@@ -74,7 +74,7 @@ namespace Mapping.Function
             }
 
 #if DEBUG
-            return "176.250.133.195";
+            return "80.111.189.96";
 #endif
 
             return "";

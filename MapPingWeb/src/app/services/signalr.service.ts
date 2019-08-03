@@ -33,11 +33,11 @@ export class SignalrService {
     init() {
         this.getConnectionInfo().subscribe(info => {
             let options = {
-                accessTokenFactory: () => info.accessKey
+                accessTokenFactory: () => info.accessToken
             };
 
             this.hubConnection = new signalR.HubConnectionBuilder()
-                .withUrl(info.endpoint, options)
+                .withUrl(info.url, options)
                 .configureLogging(signalR.LogLevel.Information)
                 .build();
 
