@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import { SignalRConnectionInfo } from '@models/signal-rconnection-info';
 import { Ping } from '@models/ping';
 import { environment } from '@environments/environment';
+import { DataRepositoryService } from '@services/data-repository.service';
 
 
 @Injectable({
@@ -20,7 +21,7 @@ export class SignalrService {
     private hubConnection: HubConnection;
     events: Subject<Ping> = new Subject();
 
-    constructor(http: HttpClient) {
+    constructor(http: HttpClient, private dataRepository: DataRepositoryService) {
         this._http = http;
     }
 
@@ -43,6 +44,7 @@ export class SignalrService {
             this.hubConnection.start().catch(err => console.error(err.toString()));
 
             this.hubConnection.on('event', (data: Ping) => {
+                this.dataRepository.AddPing(data);
                 this.events.next(data);
             });
         });

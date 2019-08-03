@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2027
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29020.237
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "MapPing.ResourceGroup", "MapPing.ResourceGroup\MapPing.ResourceGroup.deployproj", "{1E368DFB-90D5-40F4-89CB-8FB91F7DE3CC}"
 EndProject
@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpClientMapper", "HttpCli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mapping.Function", "Mapping.Function\Mapping.Function.csproj", "{1242DBCF-3686-4687-B929-0CF5FF157A0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mapping.GeolocationServices", "Mapping.GeolocationServices\Mapping.GeolocationServices.csproj", "{46833BAA-D4BD-4DD8-8F90-5DB3949C71E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mapping.GeolocationServices", "Mapping.GeolocationServices\Mapping.GeolocationServices.csproj", "{46833BAA-D4BD-4DD8-8F90-5DB3949C71E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

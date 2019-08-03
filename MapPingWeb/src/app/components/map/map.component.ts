@@ -51,9 +51,9 @@ export class MapComponent implements OnInit, AfterContentInit {
     this.svg = this.d3Svg.createSvg('#map-container');
 
 
-    // var filename = 'data/ireland.json';
+    var filename = 'data/ireland.json';
     // var filename = 'data/gb_admin.json';
-    var filename = 'data/gb_counties.json';
+    // var filename = 'data/gb_counties.json';
     d3.json(filename, function (error, c) {
 
       var window = $this.windowRef.nativeWindow;

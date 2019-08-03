@@ -34,13 +34,13 @@ namespace Mapping.Function
             var kernel = DIContainer.GetKernel();
             var ipLocationService = kernel.Get<IPLocationService>();
 
-            var position = await ipLocationService.GetPosition(ipAddress);
+            var position = await ipLocationService.GetPosition(ipAddress); 
 
             JToken bodyObject;
             try
             {
                 var json = JsonConvert.DeserializeObject<dynamic>((new StreamReader(req.Body).ReadToEnd()));
-                var ping = new { latitude = position.Latitude, longitude = position.Longitude, value = json.value};
+                var ping = new { latitude = position.Latitude, longitude = position.Longitude, value = json.value, region = position.Region};
 
                 await signalRMessages.AddAsync(
                     new SignalRMessage
