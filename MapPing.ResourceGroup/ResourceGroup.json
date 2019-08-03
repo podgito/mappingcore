@@ -19,6 +19,24 @@
         "Standard_RAGRS",
         "Premium_LRS"
       ]
+    },
+    "signalrServiceName": {
+      "type": "string"
+    },
+    "signalrSkuName": {
+      "type": "string",
+      "allowedValues": [
+        "Free_F1",
+        "Standard_S1"
+      ]
+    },
+    "signalrTier": {
+      "type": "string",
+      "allowedValues": [
+        "Free",
+        "Standard",
+        "Premium"
+      ]
     }
   },
   "variables": {
@@ -92,6 +110,28 @@
       "properties": {
         "accountType": "[parameters('storemappingfuncType')]"
       }
-    }
+    },
+    {
+      "type": "Microsoft.SignalRService/SignalR",
+      "name": "[parameters('signalrServiceName')]",
+      "apiVersion": "2018-10-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "hostNamePrefix": "[parameters('signalrServiceName')]",
+        "features": [
+          {
+            "flag": "ServiceMode",
+            "value": "Serverless"
+          }
+        ]
+      },
+      "sku": {
+        "name": "[parameters('signalrSkuName')]",
+        "tier": "[parameters('signalrTier')]",
+        "capacity": "1"
+      },
+      "tags": {
+        "displayName": "SignalRService"
+      }
   ]
 }
