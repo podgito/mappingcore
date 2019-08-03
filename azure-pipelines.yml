@@ -31,7 +31,7 @@ steps:
   inputs:
     azureSubscription: 'Pay-As-You-Go (1d823139-e005-40f4-a152-8f6b5d3524b9)'
     scriptLocation: 'inlineScript'
-    inlineScript: 'az group create --location northeurope --name $(validationResourceGroup) --tags environment=temp application=mapping'
+    inlineScript: 'az group create -vv --location northeurope --name $(validationResourceGroup) --tags environment=temp application=mapping'
 
 - task: AzureResourceGroupDeployment@2
   displayName: 'Validate Resource Group'
