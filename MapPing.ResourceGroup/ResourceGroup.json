@@ -129,7 +129,7 @@
       "sku": {
         "name": "[parameters('signalrSkuName')]",
         "tier": "[parameters('signalrTier')]",
-        "capacity": "1"
+        "capacity": 1
       },
       "tags": {
         "displayName": "SignalRService"
