@@ -34,19 +34,19 @@ steps:
     inlineScript: 'az group create --location northeurope --name $(validationResourceGroup) --tags environment=temp application=mapping'
 
 - task: AzureResourceGroupDeployment@2
-  displayName: 'Validate Passport Resource Group'
+  displayName: 'Validate Resource Group'
   inputs:
     azureSubscription: 'Pay-As-You-Go (1d823139-e005-40f4-a152-8f6b5d3524b9)'
     action: 'Create Or Update Resource Group'
     resourceGroupName: '$(validationResourceGroup)'
     location: 'North Europe'
-    csmFile: '**/Matchbox.Passport.Azure/azuredeploy.json'
+    csmFile: '**/ResourceGroup.json'
     overrideParameters: > 
                             -env validation -signalrServiceName sr-mapping-validation -signalrSkuName Free_F1 -signalrTier Free
     deploymentMode: 'Validation'
 
 - task: AzureCLI@1
-  displayName: 'Delete Passport Resource Group'
+  displayName: 'Delete Resource Group'
   inputs:
     azureSubscription: 'Pay-As-You-Go (1d823139-e005-40f4-a152-8f6b5d3524b9)'
     scriptLocation: 'inlineScript'
