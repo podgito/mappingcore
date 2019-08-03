@@ -13,6 +13,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  validationResourceGroup: 'rg-mapping-validation'
 
 
 steps:
@@ -25,6 +26,31 @@ steps:
     command: test
     projects: '**/*.Test*.csproj'
     arguments: '--configuration $(buildConfiguration)'
+
+- task: AzureCLI@1
+  inputs:
+    azureSubscription: 'Pay-As-You-Go (1d823139-e005-40f4-a152-8f6b5d3524b9)'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az group create --location northeurope --name $(validationResourceGroup) --tags environment=temp application=mapping'
+
+- task: AzureResourceGroupDeployment@2
+  displayName: 'Validate Passport Resource Group'
+  inputs:
+    azureSubscription: 'Pay-As-You-Go (1d823139-e005-40f4-a152-8f6b5d3524b9)'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: '$(validationResourceGroup)'
+    location: 'North Europe'
+    csmFile: '**/Matchbox.Passport.Azure/azuredeploy.json'
+    overrideParameters: > 
+                            -env validation -signalrServiceName sr-mapping-validation -signalrSkuName Free_F1 -signalrTier Free
+    deploymentMode: 'Validation'
+
+- task: AzureCLI@1
+  displayName: 'Delete Passport Resource Group'
+  inputs:
+    azureSubscription: 'Pay-As-You-Go (1d823139-e005-40f4-a152-8f6b5d3524b9)'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az group delete --name $(validationResourceGroup) --no-wait --yes'
 
 - task: DotNetCoreCLI@2
   displayName: Publish
