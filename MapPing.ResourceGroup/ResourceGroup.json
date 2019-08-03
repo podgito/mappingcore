@@ -6,7 +6,8 @@
       "type": "string",
       "allowedValues": [
         "dev",
-        "prod"
+        "prod",
+        "validation"
       ]
     },
     "storemappingfuncType": {
