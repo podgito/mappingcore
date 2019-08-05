@@ -73,7 +73,12 @@ steps:
   displayName: 'Install Angular CLI'
   workingDirectory: MapPingWeb
 
-- script: ng build --prod --output-path=$(build.artifactstagingdirectory)/web
+- script: ng build --prod
   displayName: 'Build Web Project'
   workingDirectory: MapPingWeb
 
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'MapPingWeb/dest'
+    Contents: '**'
+    TargetFolder: '$(build.artifactstagingdirectory)/web'
