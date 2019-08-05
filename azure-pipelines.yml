@@ -65,6 +65,14 @@ steps:
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)'
 
+- script: npm i
+  workingDirectory: MapPingWeb
+
+- script: npm i -g @angular/cli
+
+- script: ng build --prod --output-path $(build.artifactstagingdirectory)
+  workingDirectory: MapPingWeb
+
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
