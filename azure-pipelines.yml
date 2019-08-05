@@ -66,11 +66,15 @@ steps:
     PathtoPublish: '$(build.artifactstagingdirectory)'
 
 - script: npm i
+  displayName: 'Npm Install'
   workingDirectory: MapPingWeb
 
-- script: npm i -g @angular/cli
+- script: npm i @angular/cli
+  displayName: 'Install Angular CLI'
+  workingDirectory: MapPingWeb
 
 - script: ng build --prod --output-path $(build.artifactstagingdirectory)
+  displayName: 'Build Web Project'
   workingDirectory: MapPingWeb
 
 - script: echo Hello, world!
