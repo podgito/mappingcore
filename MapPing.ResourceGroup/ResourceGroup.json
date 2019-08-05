@@ -58,13 +58,13 @@
         "displayName": "func-mapping"
       },
       "properties": {
-        "cors": {
-          "allowedOrigins": [
-            "*"
-          ]
-        },
         "name": "[variables('func-mappingName')]",
         "siteConfig": {
+          "cors": {
+            "allowedOrigins": [
+              "*"
+            ]
+          },
           "appSettings": [
             {
               "name": "AzureWebJobsDashboard",

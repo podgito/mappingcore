@@ -23,7 +23,7 @@ namespace Mapping.Function
 
         [FunctionName("message")]
         public static async Task<IActionResult> PostMessage(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post, options")]HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post")]HttpRequest req,
             [SignalR(HubName = hubName)]IAsyncCollector<SignalRMessage> signalRMessages,
             ILogger log)
         {
