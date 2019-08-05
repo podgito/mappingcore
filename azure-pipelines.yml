@@ -41,7 +41,7 @@ steps:
     resourceGroupName: '$(validationResourceGroup)'
     location: 'North Europe'
     csmFile: '**MapPing.ResourceGroup/ResourceGroup.json'
-    overrideParameters: '-env validation -signalrServiceName sr-mapping-validation -signalrSkuName Free_F1 -signalrTier Free'
+    overrideParameters: '-env valid -signalrServiceName sr-mapping-validation -signalrSkuName Free_F1 -signalrTier Free'
     deploymentMode: 'Validation'
 
 - task: AzureCLI@1
