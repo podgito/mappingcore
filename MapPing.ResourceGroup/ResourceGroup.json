@@ -111,29 +111,6 @@
       "properties": {
         "accountType": "[parameters('storemappingfuncType')]"
       }
-    },
-    {
-      "type": "Microsoft.SignalRService/SignalR",
-      "name": "[parameters('signalrServiceName')]",
-      "apiVersion": "2018-10-01",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "hostNamePrefix": "[parameters('signalrServiceName')]",
-        "features": [
-          {
-            "flag": "ServiceMode",
-            "value": "Serverless"
-          }
-        ]
-      },
-      "sku": {
-        "name": "[parameters('signalrSkuName')]",
-        "tier": "[parameters('signalrTier')]",
-        "capacity": 1
-      },
-      "tags": {
-        "displayName": "SignalRService"
-      }
     }
   ]
 }
