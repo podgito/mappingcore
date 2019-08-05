@@ -69,7 +69,7 @@ steps:
   displayName: 'Npm Install'
   workingDirectory: MapPingWeb
 
-- script: npm i @angular/cli
+- script: sudo npm i -g @angular/cli
   displayName: 'Install Angular CLI'
   workingDirectory: MapPingWeb
 
