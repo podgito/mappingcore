@@ -73,7 +73,7 @@ steps:
   displayName: 'Install Angular CLI'
   workingDirectory: MapPingWeb
 
-- script: ng build --prod --outputPath $(build.artifactstagingdirectory)
+- script: ng build --prod --outputPath=$(build.artifactstagingdirectory)
   displayName: 'Build Web Project'
   workingDirectory: MapPingWeb
 
