@@ -79,6 +79,6 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    SourceFolder: 'MapPingWeb/dest'
+    SourceFolder: 'MapPingWeb/dist'
     Contents: '**'
     TargetFolder: '$(build.artifactstagingdirectory)/web'
