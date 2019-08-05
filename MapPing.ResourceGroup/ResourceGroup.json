@@ -58,6 +58,11 @@
         "displayName": "func-mapping"
       },
       "properties": {
+        "cors": {
+          "allowedOrigins": [
+            "*"
+          ]
+        },
         "name": "[variables('func-mappingName')]",
         "siteConfig": {
           "appSettings": [
